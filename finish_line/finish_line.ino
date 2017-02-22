@@ -2,14 +2,13 @@
 #ifdef __AVR__
   #include <avr/power.h>
 #endif
-
+/****************
 // Pinewood Derby Finish Line
 // Conor and Dan Kelemen
 // Jan, 2017
 // Pack 23 Suffern, NY
 // dkelemen@gmail.com
 
-/****************
 Summary: Read 4 infrared emmitter/sensors for voltage drop indicating car crossing over finish line (four lanes)
 As they change, mark them first, second, third, fourth place by lighting up the RGB LED for each lane Green, Blue, Yellow, or Red
 
@@ -38,7 +37,6 @@ heat shrink tubing from home depot: $2
 
 **********************/
 
-#include <Adafruit_NeoPixel.h> // lib for addressable RGB LEDs, so 1 pin out instead of 3
 // Setup Lane sensors (IR emitter/detector)
 const int LANE1_SENSOR_PIN = A0; // Sensor outputs voltage, must be pulled up to 5v
 const int LANE2_SENSOR_PIN = A1; 
@@ -74,7 +72,7 @@ void setup() {
   pinMode(LANE3_SENSOR_PIN, INPUT_PULLUP);
   pinMode(LANE4_SENSOR_PIN, INPUT_PULLUP);
 
-//delay(START_WAIT);  
+  delay(START_WAIT);  
 
   led1.begin(); // This initializes the NeoPixel library for the LED
   led1.setPixelColor(0,0,0,0);  // turn off the LED
@@ -88,7 +86,6 @@ void setup() {
   led4.begin();
   led4.setPixelColor(0,0,0,0);
   led4.show();
-
 }
 
 void loop() {
@@ -96,34 +93,27 @@ void loop() {
   // todo : Measure lag between checking lanes assuming finishes? Optimize? maybe move lights out until end of loop?
   // todo : add some status LED on side? (ready/error?)
   // On reset/startup let's wait/calibrate for a few tics
-  if (loopIndex++ == 0) {
-    //Serial.println("Delaying on boot");
-  //  delay(START_WAIT);
-  }
-  
+
   // ---------- Check Lane 1 ------------------------------  
   int lane1New = analogRead(LANE1_SENSOR_PIN); //Read in the ADC from lane 1 sensor
-//  Serial.print("Lane 1: ");
-//  Serial.println(lane1New);
+  Serial.print("Lane 1: ");
+  Serial.println(lane1New);
   
   // Compare to old value. is it lower by more than diff, and never finished yet?
   if ((lane1Old > 0) and !lane1Finished and ((lane1Old - lane1New) > DIFF)) {
     if (finishedCount == 0) {  // Congratulations, First Place (Green)
       led1.setPixelColor(0,0,150,0);
-      led1.show(); // This sends the updated color to the hardware.
     }
     else if (finishedCount == 1) {  // Second Place (Blue)
       led1.setPixelColor(0,0,0,150);
-      led1.show(); 
     }    
     else if (finishedCount == 2) {  // Third Place (Yellow)
       led1.setPixelColor(0,150,200,0);
-      led1.show(); 
     }    
     else if (finishedCount == 3) {  // Fourth Place (Red)
       led1.setPixelColor(0,150,5,5);
-      led1.show(); 
     }    
+    led1.show(); // This sends the updated color to the hardware.
     finishedCount++;
     lane1Finished = loopIndex;
     Serial.print("Lane 1 Finished at loop index: " );
@@ -135,25 +125,21 @@ void loop() {
   int lane2New = analogRead(LANE2_SENSOR_PIN); //Read in the ADC from lane 2 sensor
 //  Serial.print("Lane 2: ");
 //  Serial.println(lane2New);
-  
-  // Compare to old value. is it lower by more than diff, and never finished yet?
+
   if ((lane2Old > 0) and !lane2Finished and ((lane2Old - lane2New) > DIFF)) {
     if (finishedCount == 0) {  // Congratulations, First Place (Green)
       led2.setPixelColor(0,0,150,0);
-      led2.show(); // This sends the updated color to the hardware.
     }
     else if (finishedCount == 1) {  // Second Place (Blue)
       led2.setPixelColor(0,0,0,150);
-      led2.show(); 
     }    
     else if (finishedCount == 2) {  // Third Place (Yellow)
       led2.setPixelColor(0,150,200,0);
-      led2.show(); 
     }    
     else if (finishedCount == 3) {  // Fourth Place (Red)
       led2.setPixelColor(0,150,0,0);
-      led2.show(); 
     }    
+    led2.show(); // This sends the updated color to the hardware.
     finishedCount++;
     lane2Finished = loopIndex;
     Serial.print("Lane 2 Finished at loop index: " );
@@ -165,25 +151,21 @@ void loop() {
   int lane3New = analogRead(LANE3_SENSOR_PIN); //Read in the ADC from lane 3 sensor
 //  Serial.print("Lane 3: ");
 //  Serial.println(lane3New);
-  
-  // Compare to old value. is it lower by more than diff, and never finished yet?
+
   if ((lane3Old > 0) and !lane3Finished and ((lane3Old - lane3New) > DIFF)) {
     if (finishedCount == 0) {  // Congratulations, First Place (Green)
       led3.setPixelColor(0,0,150,0);
-      led3.show(); // This sends the updated color to the hardware.
     }
     else if (finishedCount == 1) {  // Second Place (Blue)
       led3.setPixelColor(0,0,0,150);
-      led3.show(); 
     }    
     else if (finishedCount == 2) {  // Third Place (Yellow)
       led3.setPixelColor(0,150,200,0);
-      led3.show(); 
     }    
     else if (finishedCount == 3) {  // Fourth Place (Red)
       led3.setPixelColor(0,150,0,0);
-      led3.show(); 
     }    
+    led3.show(); // This sends the updated color to the hardware.
     finishedCount++;
     lane3Finished = loopIndex;
     Serial.print("Lane 3 Finished at loop index: " );
@@ -195,25 +177,21 @@ void loop() {
   int lane4New = analogRead(LANE4_SENSOR_PIN); //Read in the ADC from lane 3 sensor
 //  Serial.print("Lane 4: ");
 //  Serial.println(lane4New);
-  
-  // Compare to old value. is it lower by more than diff, and never finished yet?
+
   if ((lane4Old > 0) and !lane4Finished and ((lane4Old - lane4New) > DIFF)) {
     if (finishedCount == 0) {  // Congratulations, First Place (Green)
       led4.setPixelColor(0,0,150,0);
-      led4.show(); // This sends the updated color to the hardware.
     }
     else if (finishedCount == 1) {  // Second Place (Blue)
       led4.setPixelColor(0,0,0,150);
-      led4.show(); 
     }    
     else if (finishedCount == 2) {  // Third Place (Yellow)
       led4.setPixelColor(0,150,200,0);
-      led4.show(); 
     }    
     else if (finishedCount == 3) {  // Fourth Place (Red)
       led4.setPixelColor(0,150,0,0);
-      led4.show(); 
     }    
+    led4.show(); // This sends the updated color to the hardware.
     finishedCount++;
     lane4Finished = loopIndex;
     Serial.print("Lane 4 Finished at loop index: " );
